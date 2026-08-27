@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Mario 64 — Play Online</title>
+  <meta name="description" content="Play Super Mario 64 in your browser.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.18), transparent 25%),
+        linear-gradient(180deg, #43b9ff 0%, #8bdcff 48%, #f6d27d 100%);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .cloud {
+      position: fixed;
+      width: 180px;
+      height: 55px;
+      background: rgba(255,255,255,.78);
+      border-radius: 50px;
+      filter: blur(1px);
+      z-index: 0;
+      animation: drift 28s linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: "";
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .cloud::before { width: 80px; height: 80px; left: 25px; bottom: 5px; }
+    .cloud::after { width: 105px; height: 105px; right: 18px; bottom: 0; }
+    .c1 { top: 80px; left: -220px; }
+    .c2 { top: 210px; left: -450px; animation-delay: 8s; transform: scale(.7); }
+
+    @keyframes drift {
+      from { margin-left: 0; }
+      to { margin-left: calc(100vw + 700px); }
+    }
+
+    header {
+      position: relative;
+      z-index: 2;
+      padding: 22px 5vw 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-weight: 1000;
+      font-size: clamp(24px, 5vw, 42px);
+      letter-spacing: -2px;
+      color: #fff;
+      text-shadow:
+        3px 3px 0 #d91f26,
+        6px 6px 0 rgba(0,0,0,.18);
+    }
+
+    .badge {
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.55);
+      backdrop-filter: blur(10px);
+      font-weight: 700;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      width: min(1180px, 94vw);
+      margin: 18px auto 50px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 7vw, 64px);
+      font-weight: 1000;
+      text-shadow: 0 5px 0 rgba(0,0,0,.18);
+    }
+
+    .hero p {
+      margin-top: 8px;
+      font-size: 16px;
+      opacity: .95;
+    }
+
+    .game-card {
+      background: rgba(16, 22, 42, .88);
+      border: 3px solid rgba(255,255,255,.85);
+      border-radius: 24px;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      min-height: 420px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #111;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0 3px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #182033;
+      background: #fff;
+      box-shadow: 0 5px 0 rgba(0,0,0,.2);
+      transition: transform .12s, box-shadow .12s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 rgba(0,0,0,.2);
+    }
+
+    button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(0,0,0,.2);
+    }
+
+    .info {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .info-box {
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 18px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .info-box h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      line-height: 1.5;
+      opacity: .92;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 20px 30px;
+      position: relative;
+      z-index: 2;
+      opacity: .85;
+      font-size: 13px;
+    }
+
+    @media (max-width: 750px) {
+      header { padding-top: 15px; }
+      .badge { display: none; }
+      .game-card { padding: 7px; border-radius: 18px; }
+      .screen { min-height: 300px; }
+      .info { grid-template-columns: 1fr; }
+      .hero p { font-size: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+
+  <header>
+    <div class="logo">SUPER MARIO</div>
+    <div class="badge">🎮 PLAY NOW</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>SUPER MARIO 64</h1>
+      <p>Jump into the classic 3D adventure right in your browser.</p>
+    </section>
+
+    <section class="game-card">
+      <div class="screen" id="gameScreen">
+        <iframe
+          src="https://classicjoy.games/embed?slug=super-mario-64"
+          title="Super Mario 64"
+          allowfullscreen
+          allow="fullscreen; gamepad; autoplay">
+        </iframe>
+      </div>
+
+      <div class="controls">
+        <button onclick="fullscreenGame()">⛶ Fullscreen</button>
+        <button onclick="scrollToGame()">🎮 Focus Game</button>
+      </div>
+    </section>
+
+    <section class="info">
+      <div class="info-box">
+        <h2>⭐ Explore</h2>
+        <p>Explore the castle and its many worlds while searching for Power Stars.</p>
+      </div>
+
+      <div class="info-box">
+        <h2>🕹️ Classic Gameplay</h2>
+        <p>Experience the iconic 3D platforming adventure directly inside the embedded game.</p>
+      </div>
+
+      <div class="info-box">
+        <h2>📱 Browser Friendly</h2>
+        <p>The layout adapts to desktop and mobile screens for a cleaner gaming page.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    This page embeds the game from its original third-party host. Super Mario 64 is a Nintendo property.
+  </footer>
+
+  <script>
+    function fullscreenGame() {
+      const frame = document.querySelector("iframe");
+      if (frame.requestFullscreen) frame.requestFullscreen();
+      else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+    }
+
+    function scrollToGame() {
+      document.getElementById("gameScreen").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  </script>
+</body>
+</html>
